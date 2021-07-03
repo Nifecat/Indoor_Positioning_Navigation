@@ -182,8 +182,18 @@ public class StepView extends View {
         return mMap.getWifiLocByIdx(idx);
     }
 
+    public String getWifiNameByIdx(int idx) {
+        return mMap.getWifiNameByIdx(idx);
+    }
+
     public void navTo(int to) {
         this.mNavTarget = to;
+        mMap.setNavPath(mNearestNavPoint, mNavTarget);
+    }
+
+    public void navToWifiLoc(int wifiLocIdx) {
+        PointF wifiLoc = mMap.getWifiLocByIdx(wifiLocIdx);
+        this.mNavTarget = mMap.getNearestNavPoint(wifiLoc.x, wifiLoc.y);
         mMap.setNavPath(mNearestNavPoint, mNavTarget);
     }
 
@@ -202,5 +212,20 @@ public class StepView extends View {
 
     public void setMainHandler(Handler mHandler) {
         this.mMainHandler = mHandler;
+    }
+
+
+    public boolean isNearTarget() {
+        if (mNavTarget < 0) {
+            return false;
+        }
+        PointF navLoc = mMap.getNavLocByIdx(mNavTarget);
+        if ((mCurX - navLoc.x) * (mCurX - navLoc.x) + (mCurY - navLoc.y) * (mCurY - navLoc.y) < 1000) {
+            Message message = new Message();
+            message.what = 4;
+            mMainHandler.sendMessage(message);
+            return true;
+        }
+        return false;
     }
 }

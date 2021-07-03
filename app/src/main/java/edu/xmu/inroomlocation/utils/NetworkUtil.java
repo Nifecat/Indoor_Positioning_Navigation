@@ -21,6 +21,9 @@ import java.util.Map;
 public class NetworkUtil {
 
 
+    private static final String TAG = "NetworkUtil";
+
+
     public static void sendAHelloMessageToServer(Handler mainHandler, String serverIp) {
 
         new Thread(() -> {
@@ -87,6 +90,7 @@ public class NetworkUtil {
                 Message message = new Message();
                 message.what = 1;
                 message.arg1 = Integer.valueOf(inStr).intValue();
+                Log.d(TAG, "sendAMessageToServer: " + message.arg1);
                 mainHandler.sendMessage(message);
 
                 socket.close();

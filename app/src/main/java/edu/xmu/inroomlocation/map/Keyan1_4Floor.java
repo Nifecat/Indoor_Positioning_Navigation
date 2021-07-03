@@ -41,6 +41,7 @@ public class Keyan1_4Floor extends AbstractInRoomMap {
     ArrayList<PointF[]> walls;
 
     List<String> navLocNames;
+    List<String> wifiLocNames;
 
     int[][] adj;
     int[][] dis;
@@ -129,16 +130,28 @@ public class Keyan1_4Floor extends AbstractInRoomMap {
         wifiLocs.put("409inroom1", new PointF(575, 1700));
         wifiLocs.put("409inroom2", new PointF(575, 1000));*/
 
-        wifiLocs.put("0", new PointF(3, 67.5f));
-        wifiLocs.put("1", new PointF(223, 67.5f));
-        wifiLocs.put("2", new PointF(757, 167.5f));
-        wifiLocs.put("3", new PointF(997 - 35 * 1.5f, 175f)); // 175?
-        wifiLocs.put("4", new PointF(997 - 35 * 1.5f, 310f));
-        wifiLocs.put("5", new PointF(997 - 35 * 1.5f, 510f));
-        wifiLocs.put("6", new PointF(997 - 35 * 1.5f, 760f));
-        wifiLocs.put("7", new PointF(997 - 35 * 1.5f, 845f));
-        wifiLocs.put("8", new PointF(997 - 35 * 1.5f, 1025f));
-        wifiLocs.put("9", new PointF(997 - 35 * 1.5f, 1150f));
+        wifiLocs.put("科研二东窗", new PointF(3, 67.5f));
+        wifiLocs.put("科研二消防栓", new PointF(223, 67.5f));
+        wifiLocs.put("科研二卫生间", new PointF(757, 167.5f));
+        wifiLocs.put("科研二北门", new PointF(997 - 35 * 1.5f, 175f)); // 175?
+        wifiLocs.put("科研一二走廊", new PointF(997 - 35 * 1.5f, 310f));
+        wifiLocs.put("科研一消防栓", new PointF(997 - 35 * 1.5f, 510f));
+        wifiLocs.put("科研一409室", new PointF(997 - 35 * 1.5f, 760f));
+        wifiLocs.put("科研一楼梯口", new PointF(997 - 35 * 1.5f, 845f));
+        wifiLocs.put("科研一紧急出口", new PointF(997 - 35 * 1.5f, 1025f));
+        wifiLocs.put("科研一卫生间", new PointF(997 - 35 * 1.5f, 1150f));
+        wifiLocNames = List.of(
+                "科研一卫生间",
+                "科研一紧急出口",
+                "科研一楼梯口",
+                "科研一409室",
+                "科研一消防栓",
+                "科研一二走廊",
+                "科研二北门",
+                "科研二卫生间",
+                "科研二消防栓",
+                "科研二东窗"
+        );
 
 
 
@@ -391,7 +404,7 @@ public class Keyan1_4Floor extends AbstractInRoomMap {
 
     @Override
     public PointF getWifiLocByIdx(int idx) {
-        return wifiLocs.get(String.valueOf(9 - idx));
+        return wifiLocs.get(wifiLocNames.get(idx));
     }
 
     @Override
@@ -409,6 +422,25 @@ public class Keyan1_4Floor extends AbstractInRoomMap {
         }
 
         return minIdx;
+    }
+
+    @Override
+    public String getWifiNameByIdx(int idx) {
+        return wifiLocNames.get(idx);
+    }
+
+    /**
+     * get a copy of list
+     * @return
+     */
+    @Override
+    public List<String> getWifiNames() {
+        return new ArrayList<>(wifiLocNames);
+    }
+
+    @Override
+    public PointF getNavLocByIdx(int navTargetIdx) {
+        return navLocs.get(navLocNames.get(navTargetIdx));
     }
 
     @Override

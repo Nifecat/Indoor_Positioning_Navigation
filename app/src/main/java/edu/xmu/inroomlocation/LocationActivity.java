@@ -1,12 +1,11 @@
 package edu.xmu.inroomlocation;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ImageDecoder;
-import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,7 +16,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,12 +24,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.preference.PreferenceManager;
 
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,10 +38,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import edu.xmu.inroomlocation.map.Keyan1_4Floor;
 import edu.xmu.inroomlocation.step.StepSensorAcceleration;
@@ -68,6 +62,8 @@ public class LocationActivity extends AppCompatActivity {
     private TextView mTvHint;
     private StepView mStepView;
     private int mCurrentTouchState = 0;
+
+    private ProgressDialog mDialog;
 
 
     @Override
@@ -124,6 +120,16 @@ public class LocationActivity extends AppCompatActivity {
                 switch (msg.what) {
                     case 1:
                         mStepView.setCurLoc(mStepView.getWifiLocByIdx(msg.arg1));
+                        if (mDialog != null) {
+                            mDialog.hide();
+                        }
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LocationActivity.this);
+                        builder.setMessage(String.format("你的位置在:%s", mStepView.getWifiNameByIdx(msg.arg1)));
+                        builder.setPositiveButton("确定", (dialog, which) -> {
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
 
                         break;
 
@@ -143,13 +149,17 @@ public class LocationActivity extends AppCompatActivity {
                     case 999:
 
                         mStepView.setCurLoc(100, 200);
+
+                        if (mDialog != null) {
+                            mDialog.hide();
+                        }
+
                         break;
 
                     default: {
                         break;
                     }
                 }
-
             }
         };
     }
@@ -169,8 +179,25 @@ public class LocationActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (mCurrentTouchState == 0) {
-                    mTvHint.setText("按任意位置确定目标");
-                    mCurrentTouchState = 1;
+//                    mTvHint.setText("按任意位置确定目标");
+//                    mCurrentTouchState = 1;
+
+                    List<String> goWhereItems = mStepView.getLoadedMap().getWifiNames();
+                    goWhereItems.add(0, "点击屏幕选择");
+                    AlertDialog goWhereDialog = new AlertDialog.Builder(LocationActivity.this)
+                            .setTitle("去哪？")
+                            .setItems(goWhereItems.toArray(new String[goWhereItems.size()]), (DialogInterface dialog, int which) -> {
+                                        if (which == 0) {
+                                            mTvHint.setText("按任意位置确定目标");
+                                            mCurrentTouchState = 1;
+                                        } else {
+                                            mStepView.navToWifiLoc(which - 1);
+                                        }
+                                    }
+                            ).create();
+
+                    goWhereDialog.show();
+
                 } else if (mCurrentTouchState == 1) {
                     mTvHint.setText("按任意位置修改当前位置");
                     mCurrentTouchState = 0;
@@ -253,6 +280,11 @@ public class LocationActivity extends AppCompatActivity {
         mStepView.refreshCurrentNearestLoc();
 
         mHandler.postDelayed(this::refreshCurrentNearestLoc, 1000);
+
+        if (mStepView.isNearTarget()) {
+            mStepView.navTo(-1);
+            new AlertDialog.Builder(LocationActivity.this).setTitle("到了").setPositiveButton("确定", null).create().show();
+        }
     }
 
 
@@ -320,6 +352,13 @@ public class LocationActivity extends AppCompatActivity {
         getWifiList().forEach(scanResult -> map.putIfAbsent(scanResult.SSID, scanResult.level));
 
         NetworkUtil.sendPicAndWifiStrengthToServer(mHandler, ai_ip, file_name, map);
+
+
+        mDialog = new ProgressDialog(this);
+//            dialog.setCancelable(true);
+//            dialog.setCanceledOnTouchOutside(true);
+        mDialog.setMessage("图片上传中...");
+        mDialog.show();
     }
 
 

@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractInRoomMap {
@@ -34,6 +35,12 @@ public abstract class AbstractInRoomMap {
     public abstract PointF getWifiLocByIdx(int idx);
 
     public abstract int getNearestNavPoint(float mCurX, float mCurY);
+
+    public abstract String getWifiNameByIdx(int idx);
+
+    public abstract List<String> getWifiNames();
+
+    public abstract PointF getNavLocByIdx(int navTargetIdx);
 
     interface CanvasScaler{
         PointF toCanvasXY(float mapX, float mapY);
