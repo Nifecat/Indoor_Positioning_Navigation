@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-files-path
+        name="my_images"
+        path="/storage/emulated/0/inroomlocation_pictemp" />
+<!--        path="Android/data/edu.xmu.inroomlocation/files/Pictures" />-->
+    <external-files-path
+        name="abs_path"
+        path="/storage/emulated/0/" />
+    <external-files-path
+        name="abs_path_2"
+        path="storage/emulated/0/" />
+
+    <external-path
+        name="external"
+        path="." />
+    <external-files-path
+        name="external_files"
+        path="." />
+    <files-path
+        name="files"
+        path="." />
+</paths>
