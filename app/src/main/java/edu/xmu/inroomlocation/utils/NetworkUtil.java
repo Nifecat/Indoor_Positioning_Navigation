@@ -1,5 +1,8 @@
 package edu.xmu.inroomlocation.utils;
 
+import android.content.Context;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Base64;
@@ -16,9 +19,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 
 public class NetworkUtil {
+
+    public static List<ScanResult> getWifiList(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        List<ScanResult> scanResults = wifiManager.getScanResults();
+
+        return scanResults;
+    }
 
 
     private static final String TAG = "NetworkUtil";

@@ -306,7 +306,21 @@ public class Keyan1_4Floor extends AbstractInRoomMap {
         }
     }
 
-    private void reScaleSelf() {
+    @Override
+    public void reScaleSelf(float width, float height) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
+        if (mScreenWidth != width || mScreenHeight != height) {
+            this.mScreenWidth = width;
+            this.mScreenHeight = height;
+            reScaleSelf();
+        }
+    }
+
+
+    public void reScaleSelf() {
         this.initPoints();
 
         CanvasScaler canvasScaler = getCanvasScaler(mScreenWidth, mScreenHeight, mapWidth, mapHeight);

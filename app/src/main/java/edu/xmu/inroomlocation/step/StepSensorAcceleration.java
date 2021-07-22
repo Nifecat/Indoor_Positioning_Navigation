@@ -8,6 +8,9 @@ import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * 加速度传感器
@@ -63,9 +66,15 @@ public class StepSensorAcceleration extends StepSensorBase {
     private long duration = 3500;
     private TimeCount time;
 
+
+    private ExecutorService mExecutorService;
+
     public StepSensorAcceleration(Context context, StepCallBack stepCallBack) {
         super(context, stepCallBack);
+
+        mExecutorService = Executors.newSingleThreadExecutor();
     }
+
 
     @Override
     protected void registerStepListener() {
@@ -89,14 +98,20 @@ public class StepSensorAcceleration extends StepSensorBase {
 
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        synchronized (this) {
+//        synchronized (this) {
             if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                calc_step(event);
+                mExecutorService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        calc_step(event);
+                    }
+                });
+//                calc_step(event);
             }
-        }
+//        }
     }
 
-    synchronized private void calc_step(SensorEvent event) {
+    /*synchronized*/ private void calc_step(SensorEvent event) {
         average = (float) Math.sqrt(Math.pow(event.values[0], 2)
                 + Math.pow(event.values[1], 2) + Math.pow(event.values[2], 2));
         detectorNewStep(average);

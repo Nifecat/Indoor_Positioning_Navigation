@@ -69,6 +69,7 @@ public class LocationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_location);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,7 +88,6 @@ public class LocationActivity extends AppCompatActivity {
         }
 
         mStepView.navTo(j);
-
     }
 
 
@@ -246,6 +246,10 @@ public class LocationActivity extends AppCompatActivity {
 //                int j = random.nextInt(9);
 //                navFromTo(i, j);
 //                mStepView.invalidate();
+
+
+//            Keyan1_4Floor map = new Keyan1_4Floor();
+
         });
 
 
@@ -267,7 +271,6 @@ public class LocationActivity extends AppCompatActivity {
 
     private void initAutoFreshOrientation() {
         initOrientation();
-
     }
 
     void initMap() {

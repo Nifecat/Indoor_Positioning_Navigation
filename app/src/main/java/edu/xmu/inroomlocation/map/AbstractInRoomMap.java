@@ -10,6 +10,8 @@ import java.util.Map;
 
 public abstract class AbstractInRoomMap {
 
+    public abstract void reScaleSelf(float width, float height);
+
     public void drawMap(Canvas canvas, int width, int height) {
         if (width <= 0 || height <= 0) {
             return;
